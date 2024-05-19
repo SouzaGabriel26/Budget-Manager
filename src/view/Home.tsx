@@ -1,10 +1,11 @@
-import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../app/hooks/useAuthContext';
 
 export default function Home() {
-  const navigate = useNavigate();
+  const { signIn } = useAuthContext();
 
   function handleGoogleSignin() {
-    navigate('/google/signin');
+    // navigate('/google/signin');
+    signIn();
   }
 
   return (
