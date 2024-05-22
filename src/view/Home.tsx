@@ -1,11 +1,10 @@
 import { useAuthContext } from '../app/hooks/useAuthContext';
 
 export default function Home() {
-  const { signIn } = useAuthContext();
+  const { signInGoogle } = useAuthContext();
 
   function handleGoogleSignin() {
-    // navigate('/google/signin');
-    signIn();
+    signInGoogle();
   }
 
   return (
