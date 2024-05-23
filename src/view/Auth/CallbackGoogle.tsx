@@ -2,8 +2,8 @@ import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuthContext } from '../../app/hooks/useAuthContext';
-import { google } from '../../app/models/google';
-import { user } from '../../app/models/user';
+import { googleService } from '../../app/services/google';
+import { userService } from '../../app/services/user';
 
 export function CallbackGoogle() {
   const { saveUserInfo } = useAuthContext();
@@ -16,8 +16,8 @@ export function CallbackGoogle() {
       const code = params.get('code');
       if (!code) return;
 
-      const accessToken = await google.getAccessToken(code);
-      const userInfo = await user.getInfo(accessToken);
+      const { accessToken } = await googleService.getAccessToken(code);
+      const { userInfo } = await userService.getInfo(accessToken);
 
       saveUserInfo({
         user: userInfo,

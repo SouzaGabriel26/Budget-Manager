@@ -13,7 +13,7 @@ async function getInfo(accessToken: string) {
     },
   );
 
-  return userInfo;
+  return { userInfo };
 }
 
 export const userService = Object.freeze({

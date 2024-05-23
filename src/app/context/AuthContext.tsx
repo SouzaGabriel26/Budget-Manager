@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { ReactNode, createContext, useState } from 'react';
 
 import { env } from '../config/env';
@@ -38,10 +39,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.location.href = oauth2Endpoint;
   }
 
-  function signOut() {
-    setSignedIn(false);
+  async function signOut() {
+    const accessToken = localStorage.getItem(constants.access_token_key);
+    await axios.post(
+      `https://accounts.google.com/o/oauth2/revoke?token=${accessToken}`,
+    );
+
     localStorage.removeItem(constants.access_token_key);
-    // TODO: signout google
+    setSignedIn(false);
   }
 
   async function saveUserInfo({ accessToken, user }: SaveUserInfoType) {
