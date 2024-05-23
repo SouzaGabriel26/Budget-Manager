@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { useEffect } from 'react';
 
 import { useAuthContext } from '../app/hooks/useAuthContext';
-import { user } from '../app/models/user';
+import { userService } from '../app/services/user';
 import { constants } from '../app/utils/constants';
 
 export function Dashboard() {
@@ -14,9 +14,10 @@ export function Dashboard() {
 
       if (accessToken && !userInfo) {
         try {
-          const returnedUserInfo = await user.getInfo(accessToken);
+          const { userInfo: returnedUser } =
+            await userService.getInfo(accessToken);
           saveUserInfo({
-            user: returnedUserInfo,
+            user: returnedUser,
             accessToken,
           });
         } catch (error) {
@@ -36,7 +37,15 @@ export function Dashboard() {
     <div>
       <h1>Dashboard</h1>
       <p>{userInfo?.name}</p>
-      <img src={userInfo?.picture} alt={userInfo?.name} />
+      <img src={userInfo?.picture} alt={userInfo?.name} className="mb-10" />
+
+      <button
+        type="button"
+        onClick={signOut}
+        className="px-4 py-2 rounded bg-white hover:bg-white/35 transition"
+      >
+        Signout
+      </button>
     </div>
   );
 }
