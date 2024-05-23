@@ -15,7 +15,7 @@ type AuthContextType = {
   signInGoogle(): void;
   signOut(): void;
   saveUserInfo(input: SaveUserInfoType): void;
-  userInfo: User;
+  userInfo: User | null;
 };
 
 export const AuthContext = createContext({} as AuthContextType);
@@ -23,9 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [signedIn, setSignedIn] = useState(
     () => !!localStorage.getItem(constants.access_token_key),
   );
-  const [userInfo, setUserInfo] = useState({} as User);
-  // TODO: when user is signed (accessToken in localstorage)
-  // and userInfo is empty, fetch user info from the google API
+  const [userInfo, setUserInfo] = useState<User | null>(null);
 
   function signInGoogle() {
     const queryStringOptions = queryString({
