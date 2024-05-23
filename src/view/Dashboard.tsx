@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { useEffect } from 'react';
 
 import { useAuthContext } from '../app/hooks/useAuthContext';
@@ -5,23 +6,31 @@ import { user } from '../app/models/user';
 import { constants } from '../app/utils/constants';
 
 export function Dashboard() {
-  const { saveUserInfo, userInfo } = useAuthContext();
+  const { saveUserInfo, userInfo, signOut } = useAuthContext();
 
   useEffect(() => {
     async function handleUserInfo() {
       const accessToken = localStorage.getItem(constants.access_token_key);
 
       if (accessToken && !userInfo) {
-        const returnedUserInfo = await user.getInfo(accessToken);
-        saveUserInfo({
-          user: returnedUserInfo,
-          accessToken,
-        });
+        try {
+          const returnedUserInfo = await user.getInfo(accessToken);
+          saveUserInfo({
+            user: returnedUserInfo,
+            accessToken,
+          });
+        } catch (error) {
+          if (error instanceof AxiosError) {
+            if (error.response?.status === 401) {
+              signOut();
+            }
+          }
+        }
       }
     }
 
     handleUserInfo();
-  }, [saveUserInfo, userInfo]);
+  }, [saveUserInfo, userInfo, signOut]);
 
   return (
     <div>
