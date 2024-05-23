@@ -1,46 +1,23 @@
-import axios from 'axios';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { env } from '../../app/config/env';
 import { useAuthContext } from '../../app/hooks/useAuthContext';
-import { queryString } from '../../app/utils/queryString';
+import { google } from '../../app/models/google';
+import { user } from '../../app/models/user';
 
 export function CallbackGoogle() {
   const { saveUserInfo } = useAuthContext();
-  const params = new URLSearchParams(window.location.search);
   const navigate = useNavigate();
+
+  const params = useMemo(() => new URLSearchParams(window.location.search), []);
 
   useEffect(() => {
     async function getUserInfo() {
       const code = params.get('code');
-
       if (!code) return;
 
-      const options = queryString({
-        client_id: env.google_client_id,
-        client_secret: env.google_client_secret,
-        code,
-        grant_type: 'authorization_code',
-        redirect_uri: 'http://localhost:5173/auth/callback/google',
-      });
-
-      const {
-        data: { access_token: accessToken },
-      } = await axios.post('https://oauth2.googleapis.com/token', options, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      });
-
-      const { data: userInfo } = await axios.get(
-        'https://www.googleapis.com/userinfo/v2/me',
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
+      const accessToken = await google.getAccessToken(code);
+      const userInfo = await user.getInfo(accessToken);
 
       saveUserInfo({
         user: userInfo,

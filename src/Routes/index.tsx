@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import { CallbackGoogle } from '../view/Auth/CallbackGoogle';
+import { Dashboard } from '../view/Dashboard';
 import Home from '../view/Home';
 
 import AuthGuard from './AuthGuard';
@@ -16,7 +17,7 @@ export default function Router() {
         </Route>
 
         <Route element={<AuthGuard isPrivate />}>
-          <Route path="/dashboard" element={<p>Dashboard</p>} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>

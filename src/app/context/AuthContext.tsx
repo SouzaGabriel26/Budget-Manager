@@ -1,20 +1,12 @@
 import { ReactNode, createContext, useState } from 'react';
 
-import { google } from '../model/google';
-
-type UserInfo = {
-  email: string;
-  name: string;
-  picture: string;
-  given_name: string;
-  family_name: string;
-  id: string;
-  locale: string;
-  verified_email: boolean;
-};
+import { env } from '../config/env';
+import { User } from '../types/user';
+import { constants } from '../utils/constants';
+import { queryString } from '../utils/queryString';
 
 type SaveUserInfoType = {
-  user: UserInfo;
+  user: User;
   accessToken: string;
 };
 
@@ -23,34 +15,39 @@ type AuthContextType = {
   signInGoogle(): void;
   signOut(): void;
   saveUserInfo(input: SaveUserInfoType): void;
-  userInfo: UserInfo;
+  userInfo: User | null;
 };
 
 export const AuthContext = createContext({} as AuthContextType);
-const accessTokenKey = 'budget-manager:access_token';
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [signedIn, setSignedIn] = useState(
-    () => !!localStorage.getItem(accessTokenKey),
+    () => !!localStorage.getItem(constants.access_token_key),
   );
-  const [userInfo, setUserInfo] = useState({} as UserInfo);
-  // TODO: when user is signed (accessToken in localstorage)
-  // and userInfo is empty, fetch user info from the google API
+  const [userInfo, setUserInfo] = useState<User | null>(null);
 
   function signInGoogle() {
-    const oauth2Endpoint = google.getAuthEndpoint();
+    const queryStringOptions = queryString({
+      client_id: env.google_client_id,
+      redirect_uri: constants.redirect_uri,
+      response_type: 'code',
+      scope: 'email%20profile',
+    });
+
+    const oauth2Endpoint = `https://accounts.google.com/o/oauth2/v2/auth?${queryStringOptions}`;
+
     window.location.href = oauth2Endpoint;
   }
 
   function signOut() {
     setSignedIn(false);
-    localStorage.removeItem(accessTokenKey);
+    localStorage.removeItem(constants.access_token_key);
+    // TODO: signout google
   }
 
   async function saveUserInfo({ accessToken, user }: SaveUserInfoType) {
     setUserInfo(user);
 
-    localStorage.setItem(accessTokenKey, accessToken);
+    localStorage.setItem(constants.access_token_key, accessToken);
 
     setSignedIn(true);
   }
