@@ -20,6 +20,7 @@ type AuthContextType = {
 };
 
 export const AuthContext = createContext({} as AuthContextType);
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [signedIn, setSignedIn] = useState(
     () => !!localStorage.getItem(constants.access_token_key),

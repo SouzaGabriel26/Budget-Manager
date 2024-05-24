@@ -5,12 +5,19 @@ import { useAuthContext } from '../app/hooks/useAuthContext';
 import { userService } from '../app/services/user';
 import { constants } from '../app/utils/constants';
 
+import { Header } from './components/Header';
+
 export function Dashboard() {
   const { saveUserInfo, userInfo, signOut } = useAuthContext();
 
   useEffect(() => {
     async function handleUserInfo() {
       const accessToken = localStorage.getItem(constants.access_token_key);
+
+      console.log(userInfo);
+      if (userInfo && !userInfo.verified_email) {
+        signOut();
+      }
 
       if (accessToken && !userInfo) {
         try {
@@ -33,19 +40,13 @@ export function Dashboard() {
     handleUserInfo();
   }, [saveUserInfo, userInfo, signOut]);
 
+  if (!userInfo) {
+    return null;
+  }
+
   return (
     <div>
-      <h1>Dashboard</h1>
-      <p>{userInfo?.name}</p>
-      <img src={userInfo?.picture} alt={userInfo?.name} className="mb-10" />
-
-      <button
-        type="button"
-        onClick={signOut}
-        className="px-4 py-2 rounded bg-white hover:bg-white/35 transition"
-      >
-        Signout
-      </button>
+      <Header />
     </div>
   );
 }
