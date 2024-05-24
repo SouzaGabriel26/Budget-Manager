@@ -41,9 +41,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function signOut() {
     const accessToken = localStorage.getItem(constants.access_token_key);
-    await axios.post(
-      `https://accounts.google.com/o/oauth2/revoke?token=${accessToken}`,
-    );
+
+    try {
+      await axios.post(
+        `https://accounts.google.com/o/oauth2/revoke?token=${accessToken}`,
+      );
+    } catch {
+      // do nothing
+    }
 
     localStorage.removeItem(constants.access_token_key);
     setSignedIn(false);
