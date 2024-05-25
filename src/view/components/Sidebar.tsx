@@ -21,9 +21,16 @@ export function Sidebar() {
     >
       <input
         type="checkbox"
-        hidden
         id="toggleSidebar"
-        className="peer/toggleSidebar"
+        className={`
+          appearance-none
+          w-7
+          checked:w-56
+          transition-all
+          ease-in-out
+          duration-200
+          peer/toggleSidebar
+        `}
       />
       <label
         title="expand-menu"
@@ -40,7 +47,14 @@ export function Sidebar() {
         <Arrow name="right" />
       </label>
 
-      <div className="hidden w-full peer-checked/toggleSidebar:flex justify-end">
+      <div
+        className={`
+        hidden
+        w-full
+        peer-checked/toggleSidebar:flex
+        justify-end
+      `}
+      >
         <label
           title="collapse-menu"
           htmlFor="toggleSidebar"
@@ -55,11 +69,13 @@ export function Sidebar() {
         </label>
       </div>
 
-      <img
-        className="rounded-full w-12"
-        src={userInfo?.picture}
-        alt={userInfo?.name}
-      />
+      <a href="/#" title="Profile">
+        <img
+          className="rounded-full w-12"
+          src={userInfo?.picture}
+          alt={userInfo?.name}
+        />
+      </a>
 
       <div
         className={`
@@ -67,9 +83,6 @@ export function Sidebar() {
           text-white
           peer-checked/toggleSidebar:flex
           flex-col
-          transition-all
-          ease-in-out
-          duration-200
           gap-2
           mt-6
         `}
@@ -79,24 +92,8 @@ export function Sidebar() {
         <p>{userInfo?.locale}</p>
       </div>
 
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-            aside:has(input:checked) {
-              .signOut {
-                display: block;
-              }
-
-              .signOutIcon {
-                display: none;
-              }
-            }
-          `,
-        }}
-      />
-
       <button
-        title="sign-out"
+        title="sign out"
         onClick={signOut}
         type="button"
         className={`
