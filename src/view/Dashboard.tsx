@@ -5,8 +5,6 @@ import { useAuthContext } from '../app/hooks/useAuthContext';
 import { userService } from '../app/services/user';
 import { constants } from '../app/utils/constants';
 
-import { Sidebar } from './components/Sidebar';
-
 export function Dashboard() {
   const { saveUserInfo, userInfo, signOut } = useAuthContext();
 
@@ -43,9 +41,5 @@ export function Dashboard() {
     return null;
   }
 
-  return (
-    <div className="h-full">
-      <Sidebar />
-    </div>
-  );
+  return <div>DashBoard</div>;
 }
