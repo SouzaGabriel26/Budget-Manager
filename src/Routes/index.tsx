@@ -5,6 +5,7 @@ import { Dashboard } from '../view/Dashboard';
 import Home from '../view/Home';
 
 import AuthGuard from './AuthGuard';
+import { DashboardLayout } from './DashboardLayout';
 
 export default function Router() {
   return (
@@ -17,8 +18,12 @@ export default function Router() {
         </Route>
 
         <Route element={<AuthGuard isPrivate />}>
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
         </Route>
+
+        <Route path="*" element={<p>404</p>} />
       </Routes>
     </BrowserRouter>
   );
