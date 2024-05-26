@@ -4,7 +4,6 @@ import { ReactNode, createContext, useState } from 'react';
 import { env } from '../config/env';
 import { User } from '../types/user';
 import { constants } from '../utils/constants';
-import { queryString } from '../utils/queryString';
 
 type SaveUserInfoType = {
   user: User;
@@ -27,12 +26,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [userInfo, setUserInfo] = useState<User | null>(null);
 
   function signInGoogle() {
-    const queryStringOptions = queryString({
+    const queryStringOptions = new URLSearchParams({
       client_id: env.google_client_id,
       redirect_uri: constants.redirect_uri,
       response_type: 'code',
-      scope: 'email%20profile',
-    });
+      scope: 'email profile https://www.googleapis.com/auth/spreadsheets',
+    }).toString();
 
     const oauth2Endpoint = `https://accounts.google.com/o/oauth2/v2/auth?${queryStringOptions}`;
 
